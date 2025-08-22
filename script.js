@@ -46,6 +46,7 @@ class MusicToArt {
             return;
         }
 
+        console.log('변환 시작:', input);
         this.showLoading();
         this.hideResult();
 
@@ -53,13 +54,19 @@ class MusicToArt {
             let musicInfo;
             
             if (this.isYouTubeLink(input)) {
+                console.log('YouTube 링크 감지');
                 musicInfo = await this.extractYouTubeInfo(input);
             } else {
+                console.log('음악 제목으로 검색');
                 musicInfo = await this.searchMusic(input);
             }
 
+            console.log('음악 정보:', musicInfo);
+
             if (musicInfo) {
                 await this.processMusic(musicInfo);
+            } else {
+                throw new Error('음악 정보를 가져올 수 없습니다.');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -172,15 +179,25 @@ class MusicToArt {
 
     async processMusic(musicInfo) {
         try {
+            console.log('음악 처리 시작:', musicInfo);
+            
             // 음악 플레이어 표시
             this.displayMusicPlayer(musicInfo);
+            console.log('음악 플레이어 표시 완료');
 
             // 감정 분석 및 이미지 생성
+            console.log('감정 분석 시작');
             const emotionAnalysis = await this.analyzeEmotion(musicInfo.title);
+            console.log('감정 분석 결과:', emotionAnalysis);
+            
+            console.log('이미지 생성 시작');
             const generatedImage = await this.generateArtwork(emotionAnalysis, musicInfo.title);
+            console.log('생성된 이미지:', generatedImage);
 
             // 결과 표시
+            console.log('결과 표시 시작');
             this.displayResults(emotionAnalysis, generatedImage, musicInfo.title);
+            console.log('처리 완료');
         } catch (error) {
             console.error('음악 처리 오류:', error);
             throw error;
@@ -471,30 +488,55 @@ class MusicToArt {
     }
 
     displayResults(emotionAnalysis, generatedImage, musicTitle) {
-        this.showResult();
-        
-        // 감정 태그 표시
-        const emotionTags = document.getElementById('emotionTags');
-        emotionTags.innerHTML = emotionAnalysis.emotions.map(emotion => 
-            `<span class="emotion-tag">${emotion}</span>`
-        ).join('');
+        try {
+            console.log('displayResults 호출됨:', { emotionAnalysis, generatedImage, musicTitle });
+            
+            this.showResult();
+            
+            // 감정 태그 표시
+            const emotionTags = document.getElementById('emotionTags');
+            if (emotionTags && emotionAnalysis && emotionAnalysis.emotions) {
+                emotionTags.innerHTML = emotionAnalysis.emotions.map(emotion => 
+                    `<span class="emotion-tag">${emotion}</span>`
+                ).join('');
+            } else {
+                console.error('emotionTags 또는 emotionAnalysis.emotions가 없습니다');
+            }
 
-        // 감정 설명 표시
-        const emotionDescription = document.getElementById('emotionDescription');
-        emotionDescription.innerHTML = `
-            <p><strong>전체 분위기:</strong> ${emotionAnalysis.mood}</p>
-            <p><strong>감정 강도:</strong> ${emotionAnalysis.intensity}/10</p>
-            <p>${emotionAnalysis.description}</p>
-        `;
+            // 감정 설명 표시
+            const emotionDescription = document.getElementById('emotionDescription');
+            if (emotionDescription && emotionAnalysis) {
+                emotionDescription.innerHTML = `
+                    <p><strong>전체 분위기:</strong> ${emotionAnalysis.mood || '알 수 없음'}</p>
+                    <p><strong>감정 강도:</strong> ${emotionAnalysis.intensity || 5}/10</p>
+                    <p>${emotionAnalysis.description || '감정 분석 결과를 불러올 수 없습니다.'}</p>
+                `;
+            } else {
+                console.error('emotionDescription이 없습니다');
+            }
 
-        // 생성된 이미지 표시
-        const generatedImageElement = document.getElementById('generatedImage');
-        generatedImageElement.src = generatedImage;
-        generatedImageElement.alt = `${musicTitle} - AI 생성 그림`;
+            // 생성된 이미지 표시
+            const generatedImageElement = document.getElementById('generatedImage');
+            if (generatedImageElement && generatedImage) {
+                generatedImageElement.src = generatedImage;
+                generatedImageElement.alt = `${musicTitle} - AI 생성 그림`;
+            } else {
+                console.error('generatedImageElement가 없습니다');
+            }
 
-        // 그림 설명 표시
-        const artworkDescription = document.getElementById('artworkDescription');
-        artworkDescription.textContent = `이 그림은 "${musicTitle}"에서 느껴지는 ${emotionAnalysis.mood}한 감정을 시각적으로 표현한 것입니다. ${emotionAnalysis.emotions.join(', ')}한 요소들을 담아 AI가 창작한 독특한 아트워크입니다.`;
+            // 그림 설명 표시
+            const artworkDescription = document.getElementById('artworkDescription');
+            if (artworkDescription && emotionAnalysis) {
+                artworkDescription.textContent = `이 그림은 "${musicTitle}"에서 느껴지는 ${emotionAnalysis.mood || '특별한'}한 감정을 시각적으로 표현한 것입니다. ${emotionAnalysis.emotions ? emotionAnalysis.emotions.join(', ') : '다양한'}한 요소들을 담아 AI가 창작한 독특한 아트워크입니다.`;
+            } else {
+                console.error('artworkDescription이 없습니다');
+            }
+            
+            console.log('displayResults 완료');
+        } catch (error) {
+            console.error('displayResults 오류:', error);
+            alert('결과 표시 중 오류가 발생했습니다.');
+        }
     }
 
     downloadImage() {
