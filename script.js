@@ -1,8 +1,8 @@
 class MusicToArt {
     constructor() {
         this.apiKey = 'AIzaSyAZDwowMlk29oZ1hQnEYyxLNSiSXEZsDOU';
-        this.openaiApiKey = 'sk-your-openai-api-key-here'; // 실제 OpenAI API 키로 교체 필요
-        this.testMode = true; // 테스트 모드 활성화 (API 키 없이도 작동)
+        this.openaiApiKey = 'AIzaSyChnvqp_ZKq8x_zB7sBDhegkrkrNwEiE-g'; // OpenAI API 키
+        this.testMode = true; // 테스트 모드 활성화 (올바른 OpenAI API 키 대기 중)
         this.currentAudio = null;
         this.isPlaying = false;
         this.progressInterval = null;
