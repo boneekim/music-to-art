@@ -96,7 +96,8 @@ class MusicToArt {
             }
         } catch (error) {
             console.error('YouTube 정보 추출 오류:', error);
-            throw error;
+            // API 오류 시 더미 데이터 반환
+            return this.getDummyMusicData('사랑');
         }
     }
 
@@ -124,8 +125,49 @@ class MusicToArt {
             }
         } catch (error) {
             console.error('음악 검색 오류:', error);
-            throw error;
+            // API 오류 시 더미 데이터 반환
+            return this.getDummyMusicData(query);
         }
+    }
+
+    getDummyMusicData(query) {
+        // 더미 음악 데이터 반환
+        const dummyData = {
+            '사랑': {
+                title: '사랑의 멜로디',
+                artist: '로맨틱 아티스트',
+                thumbnail: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=150&h=150&fit=crop&crop=center',
+                type: 'dummy'
+            },
+            '슬픈': {
+                title: '슬픈 발라드',
+                artist: '감성 가수',
+                thumbnail: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=150&h=150&fit=crop&crop=center',
+                type: 'dummy'
+            },
+            '신나는': {
+                title: '신나는 댄스',
+                artist: '댄스 그룹',
+                thumbnail: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=150&h=150&fit=crop&crop=center',
+                type: 'dummy'
+            },
+            '강렬한': {
+                title: '강렬한 록',
+                artist: '록 밴드',
+                thumbnail: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=150&h=150&fit=crop&crop=center',
+                type: 'dummy'
+            }
+        };
+
+        // 쿼리에서 키워드 찾기
+        for (const [keyword, data] of Object.entries(dummyData)) {
+            if (query.includes(keyword)) {
+                return data;
+            }
+        }
+
+        // 기본값 반환
+        return dummyData['사랑'];
     }
 
     async processMusic(musicInfo) {
