@@ -1,0 +1,44 @@
+{
+  "name": "music-to-art",
+  "version": "1.0.0",
+  "description": "음악의 감정을 AI가 분석하여 그림으로 변환하는 웹 애플리케이션",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000",
+    "serve": "npx http-server -p 8000",
+    "build": "echo 'No build step required for static site'",
+    "deploy": "echo 'Deploy to GitHub Pages or Netlify'"
+  },
+  "keywords": [
+    "music",
+    "ai",
+    "art",
+    "emotion-analysis",
+    "openai",
+    "dall-e",
+    "youtube-api",
+    "web-app"
+  ],
+  "author": "뮤직투아트 팀",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/username/music-to-art.git"
+  },
+  "bugs": {
+    "url": "https://github.com/username/music-to-art/issues"
+  },
+  "homepage": "https://username.github.io/music-to-art",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
