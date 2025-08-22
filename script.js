@@ -2,6 +2,7 @@ class MusicToArt {
     constructor() {
         this.apiKey = 'AIzaSyAZDwowMlk29oZ1hQnEYyxLNSiSXEZsDOU';
         this.openaiApiKey = 'sk-your-openai-api-key-here'; // 실제 OpenAI API 키로 교체 필요
+        this.testMode = true; // 테스트 모드 활성화 (API 키 없이도 작동)
         this.currentAudio = null;
         this.isPlaying = false;
         this.progressInterval = null;
@@ -145,8 +146,53 @@ class MusicToArt {
     }
 
     async analyzeEmotion(musicTitle) {
+        // 테스트 모드일 때는 더미 데이터 반환
+        if (this.testMode) {
+            // 음악 제목에 따른 다양한 감정 데이터
+            const emotionData = {
+                'love': {
+                    emotions: ['사랑스러운', '따뜻한', '로맨틱한'],
+                    description: '이 음악은 사랑과 따뜻함이 가득한 로맨틱한 분위기를 연출합니다.',
+                    mood: '로맨틱',
+                    intensity: 8
+                },
+                'sad': {
+                    emotions: ['슬픈', '감성적인', '우울한'],
+                    description: '이 음악은 깊은 슬픔과 감성을 담고 있어 마음을 울리는 분위기입니다.',
+                    mood: '감성적',
+                    intensity: 6
+                },
+                'happy': {
+                    emotions: ['즐거운', '활기찬', '신나는'],
+                    description: '이 음악은 즐거움과 활기를 불러일으키는 신나는 분위기입니다.',
+                    mood: '활기찬',
+                    intensity: 9
+                },
+                'rock': {
+                    emotions: ['강렬한', '열정적인', '파워풀한'],
+                    description: '이 음악은 강렬하고 열정적인 에너지가 넘치는 파워풀한 분위기입니다.',
+                    mood: '강렬',
+                    intensity: 9
+                }
+            };
+
+            // 음악 제목에서 키워드 찾기
+            const title = musicTitle.toLowerCase();
+            let selectedEmotion = emotionData['love']; // 기본값
+
+            if (title.includes('sad') || title.includes('슬픈') || title.includes('우울')) {
+                selectedEmotion = emotionData['sad'];
+            } else if (title.includes('happy') || title.includes('즐거운') || title.includes('신나')) {
+                selectedEmotion = emotionData['happy'];
+            } else if (title.includes('rock') || title.includes('강렬') || title.includes('열정')) {
+                selectedEmotion = emotionData['rock'];
+            }
+
+            return selectedEmotion;
+        }
+
         try {
-            // OpenAI API를 사용하여 감정 분석
+            // OpenAI API를 사용하여 감정 분석 (실제 API 키가 있을 때)
             const prompt = `다음 음악 제목에서 느껴지는 감정을 분석해주세요: "${musicTitle}"
             
             다음 형식으로 JSON 응답을 제공해주세요:
@@ -207,8 +253,21 @@ class MusicToArt {
     }
 
     async generateArtwork(emotionAnalysis, musicTitle) {
+        // 테스트 모드일 때는 더미 이미지 반환
+        if (this.testMode) {
+            // 감정에 따른 다양한 더미 이미지
+            const imageUrls = {
+                '로맨틱': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1024&h=1024&fit=crop&crop=center',
+                '감성적': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1024&h=1024&fit=crop&crop=center',
+                '활기찬': 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=1024&h=1024&fit=crop&crop=center',
+                '강렬': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1024&h=1024&fit=crop&crop=center'
+            };
+
+            return imageUrls[emotionAnalysis.mood] || imageUrls['로맨틱'];
+        }
+
         try {
-            // OpenAI DALL-E API를 사용하여 이미지 생성
+            // OpenAI DALL-E API를 사용하여 이미지 생성 (실제 API 키가 있을 때)
             const prompt = `Create a beautiful, artistic image that represents the emotions and mood of this music: "${musicTitle}". 
             Emotions: ${emotionAnalysis.emotions.join(', ')}. 
             Mood: ${emotionAnalysis.mood}. 
